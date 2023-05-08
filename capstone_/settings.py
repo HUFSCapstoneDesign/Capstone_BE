@@ -53,7 +53,7 @@ ROOT_URLCONF = "capstone_.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [BASE_DIR / 'template']
+        "DIRS": [BASE_DIR / 'template']  # template 저장할 위치
         ,
         "APP_DIRS": True,
         "OPTIONS": {

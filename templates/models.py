@@ -8,7 +8,7 @@ class Question(models.Model):
     create_date = models.DateTimeField()
 
     def __str__(self):
-        return self.subject
+        return self.subject + self.content
 
 
 class Answer(models.Model):
@@ -17,3 +17,10 @@ class Answer(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     content = models.TextField()
     create_date = models.DateTimeField()
+
+
+class Member(models.Model):
+    name = models.CharField(max_length=100)
+    email = models.CharField(max_length=100)
+    password = models.CharField(max_length=100)
+    nick_name = models.CharField(max_length=100)
