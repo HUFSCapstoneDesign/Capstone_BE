@@ -2,3 +2,20 @@
 <div>
     {{ question.content }}
 </div>
+
+<!-- action -> server 로 폼 데아터 전송시 -->
+<!-- label 태그는 input 태그를 그룹핑(id) -->
+
+<h5>{{ question.answer_set.count }} 개의 답변이 있습니다.</h5>
+<div>
+    <ul>
+        {% for answer in question.answer_set.all %}
+            <li>{{ answer.content }}</li>
+        {% endfor %}
+    </ul>
+</div>
+
+<form action="{% url 'templates:answer_create' question.id %}" method="post">
+    <label for="content">{% csrf_token %}</label><textarea name="content" id="content" rows="15"></textarea>
+    <input type="submit" value="답변등록">
+</form>

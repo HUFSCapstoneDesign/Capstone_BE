@@ -1,6 +1,7 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
+from django.utils import timezone
 
-from templates.models import Question
+from templates.models import Question, Answer
 
 
 # Create your views here.
@@ -15,3 +16,11 @@ def detail(request, question_id):
     question = get_object_or_404(Question, pk=question_id)
     context = {'question': question}
     return render(request, 'templates/question_detail.html', context)
+
+
+def answer_create(request, question_id):
+    question = get_object_or_404(Question, pk=question_id)
+    # 방법2. question.answer_set.create(content=request.POST.get('content'), create_date=timezone.now())
+    answer = Answer(question=question, content=request.POST.get('content'), create_date=timezone.now())
+    answer.save()
+    return redirect('templates:detail', question_id=question.id)
