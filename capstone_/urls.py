@@ -15,9 +15,11 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 
+# http://localhost:8000/templates -> views.index -> def index(request):
+# casptone_ -> 프로 젝트 성격의 파일 이므로 이곳 에는 프로 젝트 성격의 url 매핑만 추가 되어야 함.
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("templates/", include("templates.urls")),  # templates 앱의 urls.py
 ]
-
