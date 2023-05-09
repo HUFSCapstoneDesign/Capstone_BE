@@ -20,7 +20,7 @@ class Template_type(models.Model):
 # 템플릿 테이블
 class Template(models.Model):
     member = models.ForeignKey(Member, on_delete=models.CASCADE, db_column="member_id", null=False)
-    type = models.ForeignKey(Template_type, db_column="template_type_id")
+    type = models.ForeignKey(Template_type, on_delete=models.CASCADE, db_column="template_type_id")
 
     def __str__(self):
         return self.member.name + " 의 템플릿 입니다."
