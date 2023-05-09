@@ -13,15 +13,15 @@ class Member(models.Model):
 
 
 # 템플릿 테이블 유형
-class Template_type(models.Model):
-    name = models.CharField(max_length=255, blank=False, null=False)
+class TemplateCategory(models.Model):
+    name = models.CharField(max_length=255)
 
 
 # 템플릿 테이블
 class Template(models.Model):
-    name = models.CharField(max_length=255, unique=True, null=False)
-    member = models.ForeignKey(Member, on_delete=models.CASCADE, db_column="member_id", null=False)
-    type = models.ForeignKey(Template_type, on_delete=models.CASCADE, db_column="template_type_id")
+    name = models.CharField(max_length=255, unique=True)
+    member = models.ForeignKey(Member, on_delete=models.CASCADE)
+    category = models.ForeignKey(TemplateCategory, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     update_at = models.DateTimeField(auto_now=True)
 
