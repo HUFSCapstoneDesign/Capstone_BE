@@ -1,14 +1,9 @@
+from django.http import HttpResponse
+
+
 def index(request):
-    return None
+    return HttpResponse("인덱스 입니다.")
 
 
-def category_get(request):
-    return None
-
-
-def category_name_get(request):
-    return None
-
-
-def choose(request):
-    return None
+def category_get(request, category_id):
+    return HttpResponse("%d 번의 카테고리 입니다." % category_id)
