@@ -14,13 +14,15 @@ class Member(models.Model):
 
 # 템플릿 테이블 유형
 class Template_type(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, blank=False, null=False)
 
 
 # 템플릿 테이블
 class Template(models.Model):
     member = models.ForeignKey(Member, on_delete=models.CASCADE, db_column="member_id", null=False)
     type = models.ForeignKey(Template_type, on_delete=models.CASCADE, db_column="template_type_id")
+    created_at = models.TimeField(auto_now_add=True)
+    update_at = models.TimeField(auto_now=True)
 
     def __str__(self):
         return self.member.name + " 의 템플릿 입니다."
@@ -44,6 +46,7 @@ class Introduce(models.Model):
     type = models.CharField(max_length=100)
     src_type = models.CharField(max_length=20)
     introduce = models.TextField
+    template = models.ForeignKey(Template, on_delete=models.CASCADE)
 
 
 # 텍스트 테이블
@@ -57,3 +60,4 @@ class Text(models.Model):
     text_color = models.CharField(max_length=50)
     background_color = models.CharField(max_length=50)
     transparency = models.FloatField(default=0.0)
+    template = models.ForeignKey(Template, on_delete=models.CASCADE)
