@@ -1,19 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="db" uuid="7ade9555-cd66-4dee-8d58-6892043deea7">
+    <data-source source="LOCAL" name="db.sqlite3" uuid="f143ac8e-396d-4626-a5ef-24045a1f16ef">
       <driver-ref>sqlite.xerial</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
       <jdbc-url>jdbc:sqlite:$PROJECT_DIR$/db.sqlite3</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
-      <libraries>
-        <library>
-          <url>file://$APPLICATION_CONFIG_DIR$/jdbc-drivers/Xerial SQLiteJDBC/3.40.1/sqlite-jdbc-3.40.1.jar</url>
-        </library>
-      </libraries>
     </data-source>
-    <data-source source="LOCAL" name="Django default" uuid="011c2a8b-3e2a-43c5-b258-4a32a1f44758">
+    <data-source source="LOCAL" name="Django default" uuid="61bc8dbe-0205-47ce-a036-cf859f2015be">
       <driver-ref>sqlite.xerial</driver-ref>
       <synchronize>true</synchronize>
       <imported>true</imported>
