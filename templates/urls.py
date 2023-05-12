@@ -7,4 +7,5 @@ app_name = "templates"
 urlpatterns = [
     path("", views.index, name="index"),  # 템플릿 전체 보여 주기
     path("<int:category_id>/", views.category_get, name="category_get"),  # 카테 고리 선택 조회
+    path("search/", views.template_search, name="template_search") # 카테고리 이름 조회 # /templates/search/
 ]
