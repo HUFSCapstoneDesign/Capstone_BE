@@ -1,18 +1,19 @@
 from django.core import serializers
 from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
 
-from templates.models import Template
+from templates.models import Template, TemplateCategory
 
 
 def index(request):
-    from templates.models import Template
     template_list = Template.objects.all().order_by("-created_at")
-    json_template_list = serializers.serialize("json", template_list)
-    return HttpResponse(json_template_list, content_type="application/json")
+    return HttpResponse(serializers.serialize("json", template_list), content_type="application/json")
 
 
-def category_get(request, category_id):
-    return HttpResponse("%d 번의 카테 고리[] 입니다." % category_id)
+def get_templates_by_category_id(request, category_id):
+    template_category = get_object_or_404(TemplateCategory, pk=category_id)
+    template_list = Template.objects.filter(template_category__exact=template_category)
+    return HttpResponse(serializers.serialize("json", template_list), content_type="application/json")
 
 
 def template_search(request):
