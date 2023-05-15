@@ -1,6 +1,6 @@
 from django.core import serializers
 from django.http import HttpResponse
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, get_list_or_404
 
 from templates.models import Template, TemplateCategory
 
@@ -22,7 +22,7 @@ def template_search(request):
     if name:
         tem_list = tem_list.filter(name__icontains=name)  # get 값을 가지는 필드의 내용을 가져 오기
     json_template_list = serializers.serialize("json", tem_list)
-    return HttpResponse(json_template_list)
+    return HttpResponse(json_template_list, content_type="application/json")
 
 
 def choose(request):
@@ -30,4 +30,5 @@ def choose(request):
 
 
 def show_template_explain(request, template_id):
-    return None
+    template = get_list_or_404(Template, id=template_id)
+    return HttpResponse(serializers.serialize("json", template), content_type="application/json")
