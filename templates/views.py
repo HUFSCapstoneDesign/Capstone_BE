@@ -27,3 +27,7 @@ def template_search(request):
 
 def choose(request):
     return HttpResponse("ㅎㅎ")
+
+
+def show_template_explain(request, template_id):
+    return None
