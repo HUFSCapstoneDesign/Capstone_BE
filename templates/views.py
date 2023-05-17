@@ -1,7 +1,6 @@
 from django.core import serializers
 from django.http import HttpResponse
-from django.http import JsonResponse
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, get_list_or_404
 from templates.models import Template, TemplateCategory
 from django.views.decorators.csrf import csrf_exempt
 
@@ -24,7 +23,13 @@ def template_search(request):
     name = request.GET.get('name')  # 검색어
     tem_list = tem_list.filter(name__icontains=name)  # get 값을 가지는 필드의 내용을 가져 오기
     json_template_list = serializers.serialize("json", tem_list)
-    return HttpResponse(json_template_list)
+    return HttpResponse(json_template_list, content_type="application/json")
+
+
+
+def show_template_explain(request, template_id):
+    template = get_list_or_404(Template, id=template_id)
+    return HttpResponse(serializers.serialize("json", template), content_type="application/json")
 
 @csrf_exempt
 def template_choose(request):
@@ -35,3 +40,4 @@ def template_choose(request):
         return JsonResponse(json_template_list)
     else:
         return JsonResponse({'error': 'Invalid request method.'})
+
