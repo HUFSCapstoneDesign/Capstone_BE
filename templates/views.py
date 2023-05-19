@@ -93,37 +93,9 @@ def template_text_edit(request):
     else:
         return JsonResponse({'error': 'Method not allowed'}, status=405)
 
-# @csrf_exempt
-# def template_text_edit(request):
-#     if request.method == 'POST' or request.method == 'GET':
-#     # if request.method == 'POST':
-#         template_id = request.GET.get('template_id')
-#         template_category_id = request.GET.get('category_id')
-#         text_id = request.GET.get('text_id')
-#         try:
-#             template = Template.objects.get(id=template_id)
-#             template_category = TemplateCategory.objects.get(id=template_category_id)
-#             text = Text.objects.get(id=text_id)
-#         except (Template.DoesNotExist, TemplateCategory.DoesNotExist):
-#             return JsonResponse({'error': 'Template or Template Category not found'}, status=404)
-#
-#         response_data = {
-#             'template_id': template.id,
-#             'template_name': template.name,
-#             'template_category_id': template_category.id,
-#             'template_category_name': template_category.name,
-#             'x': text.x,
-#             'y': text.y
-#         }
-#
-#         return JsonResponse(response_data)
-#     else:
-#         return JsonResponse({'error': 'Method not allowed'}, status=405)
-
-
 @csrf_exempt
 def template_image_edit(request):
-    if request.method == 'POST':
+    if request.method == 'POST' or request.method == 'GET':
         template_id = request.GET.get('template_id')
         template_category_id = request.GET.get('category_id')
         image_id = request.GET.get('image_id')
@@ -134,11 +106,42 @@ def template_image_edit(request):
         except (Template.DoesNotExist, TemplateCategory.DoesNotExist):
             return JsonResponse({'error': 'Template or Template Category not found'}, status=404)
 
-        response_data = dict(template_id=template.id, template_name=template.name,
-                             template_category_id=template_category.id, template_category_name=template_category.name,
-                             x=Image.x, y=Image.y, height=Image.height, width=Image.width, cursive=Image.cursive,
-                             transparency=Image.transparency, angle=Image.angle, template=Image.template)
+        data = [
+            {
+                'model': 'templates.template',
+                'pk': template.id,
+                'fields': {
+                    'name': template.name,
+                    'member': template.member.id,
+                    'template_category': template.template_category.id,
+                    'created_at': template.created_at,
+                    'update_at': template.update_at,
+                }
+            },
+            {
+                'model': 'templates.templatecategory',
+                'pk': template_category.id,
+                'fields': {
+                    'name': template_category.name,
+                }
+            },
+            {
+                'model': 'templates.image',
+                'pk': image.id,
+                'fields': {
+                    'x': image.x,
+                    'y': image.y,
+                    'height': image.height,
+                    'width': image.width,
+                    'cursive': image.cursive,
+                    'transparency': image.transparency,
+                    'angle': image.angle,
+                    'template': image.template.id,
+                }
+            }
+        ]
 
-        return JsonResponse(response_data)
+        response_data = json.dumps(data)
+        return JsonResponse(response_data, safe=False)
     else:
         return JsonResponse({'error': 'Method not allowed'}, status=405)
