@@ -32,9 +32,8 @@ def template_search(request):
 def show_template_explain(request, template_id):
     template = get_object_or_404(Template, pk=template_id)
     template_tag_list = template.templatetag_set.all()
-    json_template = TemplateSerializer(template)
-    json_template_tag_list = TemplateTagSerializer(template_tag_list, many=True)
-    return Response([json_template.data, json_template_tag_list.data])
+    return Response([TemplateSerializer(template).data,
+                     TemplateTagSerializer(template_tag_list, many=True).data])
 
 
 def template_text_edit(request):
