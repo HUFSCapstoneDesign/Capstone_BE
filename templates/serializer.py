@@ -24,8 +24,6 @@ class TemplateSerializer(serializers.ModelSerializer):
 
 
 class TemplateTagSerializer(serializers.ModelSerializer):
-    template = TemplateSerializer()
-
     class Meta:
         model = TemplateTag
-        fields = ["tag_name", "template"]
+        fields = ["tag_name"]
