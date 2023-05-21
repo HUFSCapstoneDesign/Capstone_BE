@@ -1,15 +1,18 @@
 from django.core import serializers
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, get_list_or_404
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+
 from templates.models import Template, TemplateCategory
-from django.views.decorators.csrf import csrf_exempt
+from templates.template_serializer import TemplateSerializer
 
 
-
+@api_view(['GET'])
 def index(request):
-    from templates.models import Template
-    template_list = Template.objects.all().order_by("-created_at")
-    return HttpResponse(serializers.serialize("json", template_list), content_type="application/json")
+    templates = Template.objects.all().order_by("-created_at")
+    json_templates = TemplateSerializer(templates, many=True)
+    return Response(json_templates.data)
 
 
 def get_templates_by_category_id(request, category_id):
@@ -26,18 +29,6 @@ def template_search(request):
     return HttpResponse(json_template_list, content_type="application/json")
 
 
-
 def show_template_explain(request, template_id):
     template = get_list_or_404(Template, id=template_id)
     return HttpResponse(serializers.serialize("json", template), content_type="application/json")
-
-@csrf_exempt
-def template_choose(request):
-    if request.method == 'POST':
-        tem_id = request.POST.get('tem_id')
-        tem = Template.objects.filter(pk=tem_id)
-        json_template_list = serializers.serialize("json", tem)
-        return JsonResponse(json_template_list)
-    else:
-        return JsonResponse({'error': 'Invalid request method.'})
-
