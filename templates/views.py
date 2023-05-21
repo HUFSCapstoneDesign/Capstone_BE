@@ -5,14 +5,17 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from templates.models import Template, TemplateCategory
-from templates.template_serializer import TemplateSerializer
+from templates.template_serializer import TemplateSerializer, TemplateCategorySerializer
 
 
 @api_view(['GET'])
 def index(request):
     templates = Template.objects.all().order_by("-created_at")
-    json_templates = TemplateSerializer(templates, many=True)
-    return Response(json_templates.data)
+    template_category = TemplateCategory.objects.all()
+    return Response(
+        [TemplateSerializer(templates, many=True).data,
+         TemplateCategorySerializer(template_category, many=True).data]
+    )
 
 
 def get_templates_by_category_id(request, category_id):
