@@ -3,7 +3,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from templates.models import Template, TemplateCategory
-from templates.template_serializer import TemplateSerializer, TemplateCategorySerializer, TemplateTagSerializer
+from templates.serializer import TemplateSerializer, TemplateCategorySerializer, TemplateTagSerializer
 
 
 @api_view(['GET'])
@@ -32,7 +32,9 @@ def template_search(request):
 def show_template_explain(request, template_id):
     template = get_object_or_404(Template, pk=template_id)
     template_tag_list = template.templatetag_set.all()
-    return Response(TemplateTagSerializer(template_tag_list, many=True).data)
+    json_template = TemplateSerializer(template)
+    json_template_tag_list = TemplateTagSerializer(template_tag_list, many=True)
+    return Response([json_template.data, json_template_tag_list.data])
 
 
 def template_text_edit(request):
