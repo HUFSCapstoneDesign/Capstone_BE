@@ -55,7 +55,7 @@ class Image(models.Model):
 # 템플릿 태그 테이블
 class TemplateTag(models.Model):
     tag_name = models.CharField(max_length=100)
-    introduce = models.ForeignKey(Introduce, on_delete=models.CASCADE, db_column="introduce_id")
+    template = models.ForeignKey(Template, on_delete=models.CASCADE, db_column="template_id")
 
     def __str__(self):
         return self.tag_name

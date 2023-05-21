@@ -1,34 +1,43 @@
-from django.core import serializers
-from django.http import HttpResponse
-from django.shortcuts import get_object_or_404, get_list_or_404
+from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from templates.models import Template, TemplateCategory
-from templates.template_serializer import TemplateSerializer
+from templates.template_serializer import TemplateSerializer, TemplateCategorySerializer, TemplateTagSerializer
 
 
 @api_view(['GET'])
 def index(request):
     templates = Template.objects.all().order_by("-created_at")
-    json_templates = TemplateSerializer(templates, many=True)
-    return Response(json_templates.data)
+    templates_categories = TemplateCategory.objects.all()
+    return Response([TemplateSerializer(templates, many=True).data,
+                     TemplateCategorySerializer(templates_categories, many=True).data])
 
 
+@api_view(['GET'])
 def get_templates_by_category_id(request, category_id):
     template_category = get_object_or_404(TemplateCategory, pk=category_id)
-    template_list = Template.objects.filter(template_category__exact=template_category)
-    return HttpResponse(serializers.serialize("json", template_list), content_type="application/json")
+    template_list = Template.objects.filter(template_category=template_category)
+    return Response(TemplateSerializer(template_list, many=True).data)
 
 
+@api_view(['GET'])
 def template_search(request):
-    tem_list = Template.objects.all()
     name = request.GET.get('name')  # 검색어
-    tem_list = tem_list.filter(name__icontains=name)  # get 값을 가지는 필드의 내용을 가져 오기
-    json_template_list = serializers.serialize("json", tem_list)
-    return HttpResponse(json_template_list, content_type="application/json")
+    tem_list = Template.objects.filter(name__icontains=name)  # get 값을 가지는 필드의 내용을 가져 오기
+    return Response(TemplateSerializer(tem_list, many=True).data)
 
 
+@api_view(['GET'])
 def show_template_explain(request, template_id):
-    template = get_list_or_404(Template, id=template_id)
-    return HttpResponse(serializers.serialize("json", template), content_type="application/json")
+    template = get_object_or_404(Template, pk=template_id)
+    template_tag_list = template.templatetag_set.all()
+    return Response(TemplateTagSerializer(template_tag_list, many=True).data)
+
+
+def template_text_edit(request):
+    return None
+
+
+def template_image_edit(request):
+    return None
