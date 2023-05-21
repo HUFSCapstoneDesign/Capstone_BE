@@ -1,23 +1,31 @@
 from rest_framework import serializers
 
-from templates.models import Introduce, Template, TemplateCategory
+from templates.models import Introduce, Template, TemplateCategory, TemplateTag
 
 
-class TemplateImageSerializer(serializers.ModelSerializer):
+class TemplateIntroduceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Introduce
         fields = ["main_image_src"]
 
 
-class TemplateSerializer(serializers.ModelSerializer):
-    introduce = TemplateImageSerializer()
-
-    class Meta:
-        model = Template
-        fields = "__all__"
-
-
 class TemplateCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = TemplateCategory
-        fields = "__all__"
+        fields = ["name"]
+
+
+class TemplateSerializer(serializers.ModelSerializer):
+    introduce = TemplateIntroduceSerializer()
+
+    class Meta:
+        model = Template
+        fields = ["name", "introduce"]
+
+
+class TemplateTagSerializer(serializers.ModelSerializer):
+    template = TemplateSerializer()
+
+    class Meta:
+        model = TemplateTag
+        fields = ["tag_name", "template"]
