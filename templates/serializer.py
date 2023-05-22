@@ -6,7 +6,7 @@ from templates.models import Introduce, Template, TemplateCategory, TemplateTag
 class TemplateIntroduceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Introduce
-        fields = ["main_image_src"]
+        fields = ["main_image_src", "full_image_src"]
 
 
 class TemplateCategorySerializer(serializers.ModelSerializer):
@@ -20,7 +20,7 @@ class TemplateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Template
-        fields = ["name", "introduce"]
+        fields = ["id", "name", "introduce"]
 
 
 class TemplateTagSerializer(serializers.ModelSerializer):
