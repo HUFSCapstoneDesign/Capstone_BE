@@ -21,6 +21,7 @@ def get_templates_by_category_id(request, category_id):
     template_list = Template.objects.filter(template_category=template_category)
     return Response(TemplateSerializer(template_list, many=True).data)
 
+
 @api_view(['GET'])
 def template_search(request):
     name = request.GET.get('name')  # 검색어
