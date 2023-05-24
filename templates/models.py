@@ -11,13 +11,6 @@ class Member(models.Model):
     def __str__(self):
         return self.name
 
-    # 소개 테이블
-
-
-class Introduce(models.Model):
-    main_image_src = models.CharField(max_length=255, default='')
-    full_image_src = models.CharField(max_length=255)
-
 
 # 템플릿 테이블 유형
 class TemplateCategory(models.Model):
@@ -32,9 +25,8 @@ class Template(models.Model):
     name = models.CharField(max_length=255, unique=True)
     member = models.ForeignKey(Member, on_delete=models.CASCADE, db_column="member_id")
     template_category = models.ForeignKey(TemplateCategory, on_delete=models.CASCADE, db_column="category_id")
-    created_at = models.DateTimeField(auto_now_add=True, editable=False)
-    updated_at = models.DateTimeField(auto_now=True, editable=False)
-    introduce = models.ForeignKey(Introduce, on_delete=models.CASCADE, db_column="introduce_id")
+    created_at = models.DateTimeField(auto_now_add=True)
+    update_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.name
@@ -52,10 +44,17 @@ class Image(models.Model):
     template = models.ForeignKey(Template, on_delete=models.CASCADE, db_column="template_id")
 
 
+# 소개 테이블
+class Introduce(models.Model):
+    main_image_src = models.CharField(max_length=255, default='')
+    full_image_src = models.CharField(max_length=255)
+    template = models.ForeignKey(Template, on_delete=models.CASCADE, db_column="template_id")
+
+
 # 템플릿 태그 테이블
 class TemplateTag(models.Model):
     tag_name = models.CharField(max_length=100)
-    template = models.ForeignKey(Template, on_delete=models.CASCADE, db_column="template_id")
+    introduce = models.ForeignKey(Introduce, on_delete=models.CASCADE, db_column="introduce_id")
 
     def __str__(self):
         return self.tag_name
