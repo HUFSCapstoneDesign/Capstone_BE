@@ -1,147 +1,60 @@
 import json
-from django.core import serializers
-from django.http import HttpResponse
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
-from templates.models import Template, TemplateCategory, Text, Image
 from django.views.decorators.csrf import csrf_exempt
-# from django.views.decorators.http import require_POST
-
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from templates.models import Template, TemplateCategory, Image, Text
+from templates.serializer import TemplateSerializer, TemplateCategorySerializer, TemplateTagSerializer
 
 # 템플릿 선택창
+@api_view(['GET'])
 def index(request):
-    from templates.models import Template
-    template_list = Template.objects.all().order_by("-created_at")
-    return HttpResponse(serializers.serialize("json", template_list), content_type="application/json")
+    templates = Template.objects.all().order_by("-created_at")
+    templates_categories = TemplateCategory.objects.all()
+    return Response([TemplateSerializer(templates, many=True).data,
+                     TemplateCategorySerializer(templates_categories, many=True).data])
 
-
+@api_view(['GET'])
 def get_templates_by_category_id(request, category_id):
     template_category = get_object_or_404(TemplateCategory, pk=category_id)
-    template_list = Template.objects.filter(template_category__exact=template_category)
-    return HttpResponse(serializers.serialize("json", template_list), content_type="application/json")
+    template_list = Template.objects.filter(template_category=template_category)
+    return Response(TemplateSerializer(template_list, many=True).data)
 
-
+@api_view(['GET'])
 def template_search(request):
-    tem_list = Template.objects.all()
     name = request.GET.get('name')  # 검색어
-    tem_list = tem_list.filter(name__icontains=name)  # get 값을 가지는 필드의 내용을 가져 오기
-    json_template_list = serializers.serialize("json", tem_list)
-    return HttpResponse(json_template_list)
+    tem_list = Template.objects.filter(name__icontains=name)  # get 값을 가지는 필드의 내용을 가져 오기
+    return Response(TemplateSerializer(tem_list, many=True).    data)
+
 
 # 템플릿 설명창
-
+@api_view(['GET'])
+def show_template_explain(request, template_id):
+    template = get_object_or_404(Template, pk=template_id)
+    template_tag_list = template.templatetag_set.all()
+    return Response([TemplateSerializer(template).data,
+                     TemplateTagSerializer(template_tag_list, many=True).data])
 
 # 템플릿 편집창
+
+
+# 템플릿 미리보기
 @csrf_exempt
-def template_text_edit(request):
-    # if request.method == 'POST' or request.method == 'GET':
-    if request.method == 'POST':
-        template_id = request.POST.get('template_id')
-        template_category_id = request.POST.get('category_id')
-        text_id = request.POST.get('text_id')
-        try:
-            template = Template.objects.get(id=template_id)
-            template_category = TemplateCategory.objects.get(id=template_category_id)
-            text = Text.objects.get(id=text_id)
-        except (Template.DoesNotExist, TemplateCategory.DoesNotExist):
-            return JsonResponse({'error': 'Template or Template Category not found'}, status=404)
+def template_save(request):
+    try:
+        data = json.loads(request.body)
 
-        data = [
-            {
-                'model': 'templates.template',
-                'pk': template.id,
-                'fields': {
-                    'name': template.name,
-                    'member': template.member.id,
-                    'template_category': template.template_category.id,
-                    'created_at': template.created_at,
-                    'update_at': template.update_at,
-                }
-            },
-            {
-                'model': 'templates.templatecategory',
-                'pk': template_category.id,
-                'fields': {
-                    'name': template_category.name,
-                }
-            },
-            {
-                'model': 'templates.text',
-                'pk': text.id,
-                'fields': {
-                    'content': text.content,
-                    'size': text.size,
-                    'pont': text.pont,
-                    'x': text.x,
-                    'y': text.y,
-                    'angle': text.angle,
-                    'text_color': text.text_color,
-                    'back_color': text.back_color,
-                    'cursive': text.cursive,
-                    'align': text.align,
-                    'line': text.line,
-                    'textopa': text.textopa,
-                    'backopa': text.backopa,
-                    'zindex': text.zindex,
-                    'template': text.template.id,
-                }
-            }
-        ]
+        template_id = data['template_id']
+        category_id = data['category_id']
+        text_id = data['text_id']
+        image_id = data['image_id']
 
-        response_data = json.dumps(data)
-        return JsonResponse(response_data, safe=False)
-    else:
-        return JsonResponse({'error': 'Method not allowed'}, status=405)
+        template = Template.objects.create(id=template_id)
+        template_category = TemplateCategory.objects.create(id=category_id)
+        text = Text.objects.create(id=text_id, template=template)
+        image = Image.objects.create(id=image_id, template=template)
 
-@csrf_exempt
-def template_image_edit(request):
-    if request.method == 'POST' or request.method == 'GET':
-        template_id = request.GET.get('template_id')
-        template_category_id = request.GET.get('category_id')
-        image_id = request.GET.get('image_id')
-        try:
-            template = Template.objects.get(id=template_id)
-            template_category = TemplateCategory.objects.get(id=template_category_id)
-            image = Image.objects.get(id=image_id)
-        except (Template.DoesNotExist, TemplateCategory.DoesNotExist):
-            return JsonResponse({'error': 'Template or Template Category not found'}, status=404)
-
-        data = [
-            {
-                'model': 'templates.template',
-                'pk': template.id,
-                'fields': {
-                    'name': template.name,
-                    'member': template.member.id,
-                    'template_category': template.template_category.id,
-                    'created_at': template.created_at,
-                    'update_at': template.update_at,
-                }
-            },
-            {
-                'model': 'templates.templatecategory',
-                'pk': template_category.id,
-                'fields': {
-                    'name': template_category.name,
-                }
-            },
-            {
-                'model': 'templates.image',
-                'pk': image.id,
-                'fields': {
-                    'x': image.x,
-                    'y': image.y,
-                    'height': image.height,
-                    'width': image.width,
-                    'cursive': image.cursive,
-                    'transparency': image.transparency,
-                    'angle': image.angle,
-                    'template': image.template.id,
-                }
-            }
-        ]
-
-        response_data = json.dumps(data)
-        return JsonResponse(response_data, safe=False)
-    else:
-        return JsonResponse({'error': 'Method not allowed'}, status=405)
+        return JsonResponse({'status': 'success'}, status=200)
+    except :
+        return JsonResponse({'status': 'error'}, status=400)
