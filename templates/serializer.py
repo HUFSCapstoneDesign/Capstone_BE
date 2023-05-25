@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from templates.models import Introduce, Template, TemplateCategory, TemplateTag
+from templates.models import Introduce, Template, TemplateCategory, TemplateTag, Image
 
 
 class TemplateIntroduceSerializer(serializers.ModelSerializer):
@@ -27,3 +27,17 @@ class TemplateTagSerializer(serializers.ModelSerializer):
     class Meta:
         model = TemplateTag
         fields = ["tag_name"]
+
+
+class TemplateSizeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Template
+        fields = ["width", "height"]
+
+
+class TemplateImageSerializer(serializers.ModelSerializer):
+    template = TemplateSizeSerializer()
+
+    class Meta:
+        model = Image
+        fields = "__all__"

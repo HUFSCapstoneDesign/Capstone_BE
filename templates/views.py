@@ -5,9 +5,10 @@ from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from templates.serializer import TemplateSerializer, TemplateCategorySerializer, TemplateTagSerializer
 
 from templates.models import Template, TemplateCategory, Image, Text
+from templates.serializer import TemplateSerializer, TemplateCategorySerializer, TemplateTagSerializer, \
+    TemplateImageSerializer
 
 
 # 템플릿 선택창
@@ -51,10 +52,8 @@ def template_save(request):
     try:
         data = json.loads(request.body)
 
-        template_id = data['template_id']
-        category_id = data['category_id']
-        text_id = data['text_id']
-        image_id = data['image_id']
+        images = data['images']  # 이미지 객체 배열
+        texts = data['text']  # 텍스트 객체 배열
 
         template = Template.objects.create(id=template_id)
         template_category = TemplateCategory.objects.create(id=category_id)
@@ -64,3 +63,11 @@ def template_save(request):
         return JsonResponse({'status': 'success'}, status=200)
     except:
         return JsonResponse({'status': 'error'}, status=400)
+
+
+@api_view(['GET'])
+def template_edit(request, template_id):
+    template = get_object_or_404(Template, pk=template_id)
+    image_list = template.image_set.all()
+
+    return Response(TemplateImageSerializer(image_list, many=True).data)
