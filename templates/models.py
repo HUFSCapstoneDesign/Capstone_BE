@@ -32,6 +32,8 @@ class Template(models.Model):
     member = models.ForeignKey(Member, on_delete=models.CASCADE, db_column="member_id")
     template_category = models.ForeignKey(TemplateCategory, on_delete=models.CASCADE, db_column="category_id")
     introduce = models.ForeignKey(Introduce, on_delete=models.CASCADE, db_column="introduce_id")
+    width = models.IntegerField()
+    height = models.IntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
