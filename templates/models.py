@@ -6,7 +6,7 @@ class Member(models.Model):
     name = models.CharField(max_length=100)
     email = models.EmailField(max_length=100)
     password = models.CharField(max_length=100)
-    nick_name = models.CharField(max_length=100)
+    nickname = models.CharField(max_length=100)
 
     def __str__(self):
         return self.name
@@ -50,9 +50,9 @@ class Image(models.Model):
     opacity = models.FloatField()
     src = models.CharField(max_length=255)
     radis = models.FloatField()
-    border_style = models.TextField()
+    boardstyle = models.TextField()
     zindex = models.IntegerField()
-    gray_scale = models.FloatField()
+    grayscale = models.FloatField()
     blur = models.FloatField()
     brightness = models.FloatField()
     contrast = models.FloatField()
@@ -60,8 +60,8 @@ class Image(models.Model):
     invert = models.FloatField()
     saturate = models.FloatField()
     sepia = models.FloatField()
-    border_size = models.FloatField()
-    border_color = models.TextField()
+    bordersize = models.FloatField()
+    bordercolor = models.TextField()
     template = models.ForeignKey(Template, on_delete=models.CASCADE, db_column="template_id")
 
 
@@ -83,7 +83,6 @@ class Text(models.Model):
     y = models.FloatField()
     text_color = models.CharField(max_length=50)
     back_color = models.CharField(max_length=50)
-    cursive = models.FloatField()
     align = models.BooleanField(default=False)
     underlined = models.BooleanField(default=False)
     textopa = models.FloatField()
