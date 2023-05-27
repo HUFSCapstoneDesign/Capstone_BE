@@ -4,7 +4,7 @@ from rest_framework.response import Response
 
 from templates.models import Template, TemplateCategory
 from templates.serializer import TemplateSerializer, TemplateCategorySerializer, TemplateTagSerializer, \
-    TemplateImageSerializer, TemplateTextSerializer
+    TemplateImageSerializer, TemplateTextSerializer, TemplateEditSerializer
 
 
 # 템플릿 선택창
@@ -68,5 +68,5 @@ def template_edit(request, template_id):
     text_list = template.text_set.all()
 
     return Response(
-        [TemplateImageSerializer(image_list, many=True).data, TemplateSerializer(template).data,
+        [TemplateImageSerializer(image_list, many=True).data, TemplateEditSerializer(template).data,
          TemplateTextSerializer(text_list, many=True).data])
