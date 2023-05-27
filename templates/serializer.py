@@ -47,5 +47,8 @@ class TemplateTextSerializer(serializers.ModelSerializer):
         model = Text
         fields = "__all__"
 
-# Image 안에 template 제외
-# text 안에 template 제외
+
+class TemplateEditSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Template
+        fields = ["width", "height"]
