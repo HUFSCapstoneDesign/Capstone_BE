@@ -1,14 +1,10 @@
-import json
-
-from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
-from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from templates.models import Template, TemplateCategory, Image, Text
+from templates.models import Template, TemplateCategory
 from templates.serializer import TemplateSerializer, TemplateCategorySerializer, TemplateTagSerializer, \
-    TemplateImageSerializer
+    TemplateImageSerializer, TemplateTextSerializer
 
 
 # 템플릿 선택창
@@ -46,28 +42,31 @@ def show_template_explain(request, template_id):
 # 템플릿 편집창
 
 
-# 템플릿 미리보기
-@csrf_exempt
-def template_save(request):
-    try:
-        data = json.loads(request.body)
-
-        images = data['images']  # 이미지 객체 배열
-        texts = data['text']  # 텍스트 객체 배열
-
-        template = Template.objects.create(id=template_id)
-        template_category = TemplateCategory.objects.create(id=category_id)
-        text = Text.objects.create(id=text_id, template=template)
-        image = Image.objects.create(id=image_id, template=template)
-
-        return JsonResponse({'status': 'success'}, status=200)
-    except:
-        return JsonResponse({'status': 'error'}, status=400)
+# # 템플릿 미리보기
+# @csrf_exempt
+# def template_save(request):
+#     try:
+#         data = json.loads(request.body)
+#
+#         images = data['images']  # 이미지 객체 배열
+#         texts = data['text']  # 텍스트 객체 배열
+#
+#         template = Template.objects.create(id=template_id)
+#         template_category = TemplateCategory.objects.create(id=category_id)
+#         text = Text.objects.create(id=text_id, template=template)
+#         image = Image.objects.create(id=image_id, template=template)
+#
+#         return JsonResponse({'status': 'success'}, status=200)
+#     except:
+#         return JsonResponse({'status': 'error'}, status=400)
 
 
 @api_view(['GET'])
 def template_edit(request, template_id):
     template = get_object_or_404(Template, pk=template_id)
     image_list = template.image_set.all()
+    text_list = template.text_set.all()
 
-    return Response(TemplateImageSerializer(image_list, many=True).data)
+    return Response(
+        [TemplateImageSerializer(image_list, many=True).data, TemplateSerializer(template).data,
+         TemplateTextSerializer(text_list, many=True).data])

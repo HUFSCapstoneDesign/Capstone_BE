@@ -30,7 +30,7 @@ class Introduce(models.Model):
 class Template(models.Model):
     name = models.CharField(max_length=255, unique=True)
     member = models.ForeignKey(Member, on_delete=models.CASCADE, db_column="member_id")
-    template_category = models.ForeignKey(TemplateCategory, on_delete=models.CASCADE, db_column="category_id")
+    category = models.ForeignKey(TemplateCategory, on_delete=models.CASCADE, db_column="category_id")
     introduce = models.ForeignKey(Introduce, on_delete=models.CASCADE, db_column="introduce_id")
     width = models.IntegerField()
     height = models.IntegerField()
