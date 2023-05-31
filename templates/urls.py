@@ -10,5 +10,5 @@ urlpatterns = [
     path("search/", views.template_search, name="template_search"),  # 카테고리 이름 조회 # /templates/search/
     path("<int:template_id>/explain", views.show_template_explain, name="template_show"),  # 템플릿 설명(팝업창)
     path("<int:template_id>/edit", views.template_edit, name="template_edit"),  # 템플릿 편집창 보여주기
-    # path("save/", views.template_save, name="template_save")  # 템플릿 저장 # /templates/template_save
+    path("save/", views.TemplateCreateAPIView.as_view(), name="template_save")  # 템플릿 저장 # /templates/template_save
 ]
