@@ -12,24 +12,22 @@ class TemplateIntroduceSerializer(serializers.ModelSerializer):
 class TemplateCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = TemplateCategory
-        fields = ["name"]
-
-
-class TemplateTagSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = TemplateTag
         fields = "__all__"
-        # fields = ["tag_name"]
 
 
 class TemplateSerializer(serializers.ModelSerializer):
     introduce = TemplateIntroduceSerializer()
     category = TemplateCategorySerializer()
-    tags = TemplateTagSerializer(many=True)
 
     class Meta:
         model = Template
-        fields = ["id", "name", "introduce", "category", "tags"]
+        fields = ["id", "name", "introduce", "category"]
+
+
+class TemplateTagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TemplateTag
+        fields = ["tag_name"]
 
 
 class TemplateSizeSerializer(serializers.ModelSerializer):

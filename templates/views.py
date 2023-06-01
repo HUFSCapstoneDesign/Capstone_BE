@@ -1,7 +1,8 @@
 from django.shortcuts import get_object_or_404
+from rest_framework import generics
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from rest_framework import generics
+
 from templates.models import Template, TemplateCategory
 from templates.serializer import TemplateSerializer, TemplateCategorySerializer, TemplateTagSerializer, \
     TemplateImageSerializer, TemplateTextSerializer, TemplateEditSerializer, TemplateSaveSerializer
@@ -19,7 +20,7 @@ def index(request):
 @api_view(['GET'])
 def get_templates_by_category_id(request, category_id):
     template_category = get_object_or_404(TemplateCategory, pk=category_id)
-    template_list = Template.objects.filter(template_category=template_category)
+    template_list = Template.objects.filter(category=template_category)
     return Response(TemplateSerializer(template_list, many=True).data)
 
 
@@ -50,8 +51,8 @@ def template_edit(request, template_id):
         [TemplateImageSerializer(image_list, many=True).data, TemplateEditSerializer(template).data,
          TemplateTextSerializer(text_list, many=True).data])
 
+
 # 템플릿 미리보기
 class TemplateCreateAPIView(generics.CreateAPIView):
     queryset = Template.objects.all()
     serializer_class = TemplateSaveSerializer
-
